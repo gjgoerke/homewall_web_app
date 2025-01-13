@@ -1,0 +1,92 @@
+{% extends "boulders/base_boulder.html" %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/boulderForm.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="card-title mb-4">Edit Boulder</h2>
+        <form method="post" id="boulderForm">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.grade.label_tag }}
+                {{ form.grade }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+
+            {# Hidden hold inputs #}
+            {{ form.holds_start }}
+            {{ form.holds_finish }}
+            {{ form.holds_general }}
+            {{ form.holds_feet_only }}
+            {{ form.holds_hands_only }}
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i>Save Changes
+                </button>
+                <a href="{% url 'boulders:boulder_view' pk=object.pk %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </a>
+                <button type="button" 
+                    class="btn btn-sm btn-outline-primary off"
+                    id="light-button"
+                >
+                    <i class="bi bi-lightbulb"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Define the function first
+    function lightButtonToggle() {
+        // Parse JSON strings into arrays
+        const holdsStart = JSON.parse(document.getElementById("id_holds_start").value || '[]');
+        const holdsFinish = JSON.parse(document.getElementById("id_holds_finish").value || '[]');
+        const holdsGeneral = JSON.parse(document.getElementById("id_holds_general").value || '[]');
+        const holdsFeet = JSON.parse(document.getElementById("id_holds_feet_only").value || '[]');
+        const holdsHands = JSON.parse(document.getElementById("id_holds_hands_only").value || '[]');
+        
+        const lightButton = document.getElementById('light-button');
+        lightButton.classList.toggle('off');
+        lightButton.classList.toggle('on');
+        let icon = lightButton.querySelector('i');
+        icon.classList.toggle('bi-lightbulb');
+        icon.classList.toggle('bi-lightbulb-off');
+        
+        if (lightButton.classList.contains('on')) {
+            updateLights(holdsStart, holdsFinish, holdsGeneral, holdsFeet, holdsHands);
+        }
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the boulder with existing data
+        drawBoulder('boulder-svg', 440, 630, true, {
+            holds_start: JSON.parse(document.getElementById('id_holds_start').value || '[]'),
+            holds_finish: JSON.parse(document.getElementById('id_holds_finish').value || '[]'),
+            holds_general: JSON.parse(document.getElementById('id_holds_general').value || '[]'),
+            holds_feet_only: JSON.parse(document.getElementById('id_holds_feet_only').value || '[]'),
+            holds_hands_only: JSON.parse(document.getElementById('id_holds_hands_only').value || '[]')
+        });
+    });
+    document.getElementById('light-button').addEventListener('click', lightButtonToggle);
+</script>
+{% endblock %}

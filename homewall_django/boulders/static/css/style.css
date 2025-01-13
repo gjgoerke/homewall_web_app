@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap'); 
+
+nav {
+    display: flex;
+    /* justify-content: space-around; */
+}
+
+.boulder-link {
+    display: block; 
+}
+
+/* Custom styles to complement Bootstrap */
+.table th {
+    font-weight: 600;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+/* Optional: Custom hover effect for boulder links */
+.table td a:hover {
+    color: var(--bs-primary) !important;
+}
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sortable:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.sortable i {
+    font-size: 0.8em;
+    margin-left: 0.5em;
+}
+
+.coordinates {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+}
+
+.boulder-container {
+    background: #f8f9fa;
+    /* border-radius: 8px; */
+    /* padding: 20px; */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* margin-bottom: 20px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#boulder-svg {
+    width: 100%;
+    height: 100%;
+    max-width: 440px;
+    max-height: 630px;
+    aspect-ratio: 440/630;
+    transform-origin: top left;
+}
+

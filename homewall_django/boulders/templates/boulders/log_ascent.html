@@ -1,0 +1,28 @@
+{% extends 'boulders/base.html' %}
+
+{% block content %}
+<div class = "container">
+    <h2>Log Ascent for {{ boulder.name }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="container mb-2">
+            {{ form.attempts.label_tag }}
+            {{ form.attempts }}
+            {{ form.attempts.errors }}
+        </div>
+
+        <div class = "container mb-2">
+            {{ form.comment.label_tag }}
+            {{ form.comment }}
+            {{ form.comment.errors }}
+        </div>
+
+        <div class="container">
+            <button type="submit" class="btn btn-primary">Log Ascent</button>
+            <a href="{% url 'boulders:index'%}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

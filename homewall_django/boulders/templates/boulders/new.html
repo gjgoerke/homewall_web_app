@@ -1,0 +1,76 @@
+{% extends "boulders/base_boulder.html" %}
+{% load static %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+<h1>New Boulder</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="{{ form.name.id_for_label }}" class="form-label" autocomplete="off">Name</label>
+        {{ form.name }}
+    </div>
+    <div class="mb-3">
+        <label for="{{ form.grade.id_for_label }}" class="form-label" autocomplete="off">Grade</label>
+        {{ form.grade }}
+    </div>
+    <div class="mb-3">
+        <label for="{{ form.description.id_for_label }}" class="form-label" autocomplete="off">Description</label>
+        {{ form.description }}
+    </div>
+    
+    {# Hidden fields for holds #}
+    {{ form.holds_start }}
+    {{ form.holds_finish }}
+    {{ form.holds_general }}
+    {{ form.holds_feet_only }}
+    {{ form.holds_hands_only }}
+    
+    <input type="submit" value="Submit" class="btn btn-primary">
+    <input type="button" onclick="window.location='{% url 'boulders:index' %}';" value="Cancel" class="btn btn-secondary">
+    <button type="button" 
+            class="btn btn-sm btn-outline-primary off"
+            id="light-button"
+            >
+            <i class="bi bi-lightbulb"></i>
+    </button>
+</form>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/config.js' %}"></script>
+<script src="{% static 'js/wifi.js' %}"></script>
+<script>
+    // Define the function first
+    function lightButtonToggle() {
+        // Parse JSON strings into arrays
+        const holdsStart = JSON.parse(document.getElementById("id_holds_start").value || '[]');
+        const holdsFinish = JSON.parse(document.getElementById("id_holds_finish").value || '[]');
+        const holdsGeneral = JSON.parse(document.getElementById("id_holds_general").value || '[]');
+        const holdsFeet = JSON.parse(document.getElementById("id_holds_feet_only").value || '[]');
+        const holdsHands = JSON.parse(document.getElementById("id_holds_hands_only").value || '[]');
+        
+        const lightButton = document.getElementById('light-button');
+        lightButton.classList.toggle('off');
+        lightButton.classList.toggle('on');
+        let icon = lightButton.querySelector('i');
+        icon.classList.toggle('bi-lightbulb');
+        icon.classList.toggle('bi-lightbulb-off');
+        
+        if (lightButton.classList.contains('on')) {
+            updateLights(holdsStart, holdsFinish, holdsGeneral, holdsFeet, holdsHands);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Draw boulder
+        drawBoulder('boulder-svg', document.getElementById('boulder-svg').width.baseVal.value,
+         document.getElementById('boulder-svg').height.baseVal.value, true);
+        
+        // Add light button event listener
+        document.getElementById('light-button').addEventListener('click', lightButtonToggle);
+    });
+</script>
+{% endblock %}

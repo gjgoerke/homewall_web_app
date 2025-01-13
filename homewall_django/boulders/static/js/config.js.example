@@ -1,0 +1,2 @@
+const ESP32_IP = '0.0.0.0'; //Replace with your ESP32's IP address
+export { ESP32_IP };

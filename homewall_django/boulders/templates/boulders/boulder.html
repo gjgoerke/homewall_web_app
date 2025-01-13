@@ -1,0 +1,45 @@
+{% extends "boulders/base_boulder.html" %}
+{% load static %}
+
+{% block content %}
+<h1>{{ boulder.name }}</h1>
+{% if boulder.grade is not None %}
+<h2>V{{ boulder.grade }}</h2>
+{% else %}
+<h2>Project</h2>
+{% endif %}
+<p>{{ boulder.description }}</p>
+<button type="button" 
+        class="btn btn-sm btn-outline-primary"
+        onclick="lightBoulderFromButton(
+            {{boulder.holds_start}},
+            {{boulder.holds_finish}},
+            {{boulder.holds_general}},
+            {{boulder.holds_feet_only}},
+            {{boulder.holds_hands_only}}
+        )">
+        <i class="bi bi-lightbulb"></i>
+    </button>
+
+<a href="{% url 'boulders:index' %}" class="btn btn-dark">Back to boulders</a>
+<a href="{% url 'boulders:edit_boulder_view' pk=boulder.pk %}" class="btn btn-outline-secondary">
+    <i class="bi bi-pencil-square me-2"></i>Edit
+</a>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/common.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const boulderData = {
+            holds_start: {{ boulder.holds_start|safe }},
+            holds_general: {{ boulder.holds_general|safe }},
+            holds_finish: {{ boulder.holds_finish|safe }},
+            holds_feet_only: {{ boulder.holds_feet_only|safe }},
+            holds_hands_only: {{ boulder.holds_hands_only|safe }}
+        };
+        drawBoulder('boulder-svg', document.getElementById('boulder-svg').width.baseVal.value,
+         document.getElementById('boulder-svg').height.baseVal.value, false, boulderData);
+    });
+</script>
+{% endblock %}
