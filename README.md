@@ -1,7 +1,7 @@
-# LED Climbing Wall Control System
+# Home Climbing Wall with LEDs
+A IoT-based LED control system for climbing walls, built with ESP32 and Django. 
 This app is very much a work in progress! I'm currently rewriting it in react-native + expo for mobile. 
 
-A IoT-based LED control system for climbing walls, built with ESP32 and Django. The system enables real-time control of LED holds through a web interface.
 
 ## Technical Overview
 
