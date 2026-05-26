@@ -123,6 +123,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+ESP32_IP = "192.168.1.250"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

@@ -3,6 +3,7 @@ from . import views
 
 app_name = "boulders"
 urlpatterns = [
+    path("api/lights/", views.proxy_lights, name="proxy_lights"),
     # Boulder URLs
     path("", views.IndexView.as_view(), name="index"),
     path("new/", views.NewBoulderView.as_view(), name="new_boulder_view"),

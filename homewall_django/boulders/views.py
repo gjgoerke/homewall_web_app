@@ -1,4 +1,11 @@
+import json
+from urllib import request as urllib_request
+
+from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, CreateView
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
@@ -11,6 +18,23 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Boulder, Circuit, CircuitSection, Ascent, BoulderAscent, CircuitAscent, ClimberProfile
 from .forms import BoulderForm, CircuitForm, LogBoulderAscentForm
+
+@csrf_exempt
+@require_POST
+def proxy_lights(request):
+    url = f"http://{settings.ESP32_IP}/lights"
+    try:
+        req = urllib_request.Request(
+            url,
+            data=request.body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib_request.urlopen(req, timeout=5) as resp:
+            return JsonResponse(json.loads(resp.read().decode()))
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=502)
+
 
 # Boulders
 class IndexView(ListView):

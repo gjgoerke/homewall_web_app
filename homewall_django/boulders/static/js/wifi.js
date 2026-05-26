@@ -38,7 +38,7 @@ async function updateLights(start, finish, general, feet, hands) {
 
     console.log('Sending holds:', holds);
 
-    const response = await fetch(`http://${ESP32_IP}/lights`, {
+    const response = await fetch('/api/lights/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

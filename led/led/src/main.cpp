@@ -9,10 +9,10 @@
 #define NUM_LEDS    350
 
 // Static IP configuration
-IPAddress staticIP(10, 0, 0, 250);     
-IPAddress gateway(10, 0, 0, 1);        // Router
+IPAddress staticIP(192, 168, 1, 250);
+IPAddress gateway(192, 168, 1, 254);   // Router
 IPAddress subnet(255, 255, 255, 0);
-IPAddress dns(8, 8, 8, 8);            // Google DNS
+IPAddress dns(8, 8, 8, 8);
 
 WebServer server(80);
 NeoPixelBus<NeoRgbFeature, NeoEsp32Rmt0Ws2811Method> strip(NUM_LEDS, LED_PIN);
@@ -25,12 +25,14 @@ void handleLights() {
         
         if (error) {
             Serial.println("JSON Parse Error");
+            server.send(400, "application/json", "{\"status\":\"error\",\"message\":\"JSON parse error\"}");
             return;
         }
 
         JsonArray holds = doc["holds"];
         if (!holds) {
             Serial.println("No holds array found");
+            server.send(400, "application/json", "{\"status\":\"error\",\"message\":\"No holds array\"}");
             return;
         }
 
@@ -72,6 +74,8 @@ void handleLights() {
         strip.Show();
         
         server.send(200, "application/json", "{\"status\":\"success\"}");
+    } else {
+        server.send(400, "application/json", "{\"status\":\"error\",\"message\":\"Missing body\"}");
     }
 }
 
@@ -106,6 +110,12 @@ void setup() {
         }
     }
     
+    if (!WiFi.config(staticIP, gateway, subnet, dns)) {
+        Serial.println("Static IP Configuration Failed");
+    } else {
+        Serial.println("Static IP Configuration Success");
+    }
+
     Serial.printf("\nAttempting to connect to: %s\n", ssid);
     WiFi.begin(ssid, password);
     
@@ -152,13 +162,6 @@ connected:
         Serial.println("\nFailed to connect");
     }
     
-    // Configure static IP
-    if (!WiFi.config(staticIP, gateway, subnet, dns)) {
-        Serial.println("Static IP Configuration Failed");
-    } else {
-        Serial.println("Static IP Configuration Success");
-    }
-    
     // Initialize NeoPixelBus
     strip.Begin();
     strip.Show();
@@ -168,6 +171,7 @@ connected:
         server.sendHeader("Access-Control-Allow-Origin", "*");
         server.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
         server.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        server.sendHeader("Access-Control-Allow-Private-Network", "true");
         server.send(200, "text/plain", "");
     });
 
@@ -176,7 +180,6 @@ connected:
         server.sendHeader("Access-Control-Allow-Origin", "*");
         handleLights();
     });
-
     server.begin();
 }
 
